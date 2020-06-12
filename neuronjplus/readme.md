@@ -24,18 +24,16 @@ docker ps
 # 54539225fd97        koji96/neuronjplus:0.0.1      "sleep infinity"         23 minutes ago      Up 23 minutes       0.0.0.0:9097->8888/tcp              neuronjplus_jplus_1
 ```
 
-- dockerコンテナに入る。コンテナIDは最初の4文字くらいを指定してやれば良い。(確かID以外に名前指定とかもできるはず。)
+- dockerコンテナに入る。コンテナIDは最初の4文字くらいを指定してやれば良い。ID以外に名前指定もできる。
 
 ```zsh
 docker exec -it 5453 bash 
-# ここからdocker containerの中での作業 
+# 名前指定する場合
+# docker exec -it neuronjplus002 bash
 
-# pyenvの設定反映のために必要(必要ないように作れるはずだが試していない。)
-source ~/.bash_profile
-python --version
-# 2.7.16にバージョンがなっていればOK
 
-# 角田さんのプログラムを実行する。
+# ここからdocker containerの中での作業
+# 角田さんのプログラムを実行する。(meta.jsonは設定してある。)
 cd ~/pythonNeuronSimulation
 python parallelNeuronSimulation.py -s testdata/HHsingle_exsample/run.json
 ```
@@ -56,9 +54,14 @@ jupyter notebook --port 8888 --ip 0.0.0.0 --allow-root
 ```python
 import pickle
 import pprint
+import glob
+import os
 import matplotlib.pyplot as plt
 %matplotlib inline
-with open("./result/2020-04-22T14_45_30.501406/0_1.pickle") as f:
+list_of_files = glob.glob('result/**/*.pickle')
+
+latest_file = max(list_of_files, key=os.path.getctime)
+with open(latest_file) as f:
     zeroone=pickle.load(f)
 print(len(zeroone["results"]["t"] ))
 print(len(zeroone["results"]["r_v_list"][0][1]))
