@@ -1,7 +1,8 @@
 version: '3.1'
 services:
   jplus:
-    image: koji96/neuronjplus:0.0.1
+    build: .
+    container_name: neuronjplus002
     ports:
       - "9097:8888"
     volumes:
